@@ -34,7 +34,7 @@ Route::controller(CategoryController::class)->group(function(){
 
 Route::controller(ProductController::class)-> group(function(){
     Route::get('productos', 'getProducts'); //OBtener todos los productos
-    Route::get('producto/{id}', 'productosPorCategoria'); //Producto por ID
+    Route::get('products/category/{category_id}', 'productosPorCategoria'); //Producto por ID
     Route::delete('eliminarProducto/{id}', 'deleteProductById');//Eliminar producto por ID
     Route::post('add-product', [ProductController::class, 'addProduct'])->withoutMiddleware(['auth']);
     Route::post('registrarA', [ProductController::class, 'agregarAse']);

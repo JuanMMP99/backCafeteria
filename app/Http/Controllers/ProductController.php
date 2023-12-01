@@ -27,7 +27,7 @@ class ProductController extends Controller
     public function __construct()
     {
         // Aplicar middleware de autenticación a todas las funciones excepto 'agregarAse'
-        $this->middleware('auth')->except('agregarAse');
+        $this->middleware('auth')->except('agregarAse','getProducts','productosPorCategoria');
     }
 
     public function agregarAse(Request $request)
@@ -45,13 +45,16 @@ class ProductController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        // Crear el accesorio sin verificar la autenticación
+        $rutaArchivoImg = $request->file('image')->store('public/imgproductos');
         $accesorio = Product::create([
             'name' => $request->name,
             'category_id' => $request->category_id,
             'desc' => $request->desc,
             'price' => $request->price,
+            'image' => $rutaArchivoImg,
+
         ]);
+
 
         return response()->json(['accesorio' => $accesorio], 201);
     }
@@ -64,6 +67,9 @@ public function productosPorCategoria($category_id) {
 
     if ($products->isEmpty()) {
         return response()->json(['message' => 'No se encontraron productos en esta categoría'], 404);
+    }
+    foreach ($products as $product) {
+        $product->image = asset(Storage::url($product->image));
     }
 
     return response()->json(['products' => $products]);
